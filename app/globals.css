@@ -1,0 +1,135 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@300;400;700&display=swap');
+
+:root {
+  --foreground-rgb: 26, 26, 26;
+  --background-start-rgb: 250, 250, 250;
+  --background-end-rgb: 255, 255, 255;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Scientific paper styling */
+.scientific-content {
+  font-family: 'Merriweather', Georgia, serif;
+  line-height: 1.8;
+  color: #1a1a1a;
+}
+
+.scientific-content h1,
+.scientific-content h2,
+.scientific-content h3,
+.scientific-content h4 {
+  font-family: 'Inter', system-ui, sans-serif;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #0c4a6e;
+}
+
+.scientific-content h1 {
+  font-size: 2rem;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.scientific-content h2 {
+  font-size: 1.5rem;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.3rem;
+}
+
+.scientific-content h3 {
+  font-size: 1.25rem;
+}
+
+.scientific-content p {
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+.scientific-content ul,
+.scientific-content ol {
+  margin-left: 2rem;
+  margin-bottom: 1rem;
+}
+
+.scientific-content blockquote {
+  border-left: 4px solid #2563eb;
+  padding-left: 1rem;
+  margin: 1.5rem 0;
+  font-style: italic;
+  color: #4b5563;
+}
+
+.scientific-content code {
+  background: #f3f4f6;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0.25rem;
+  font-family: 'Fira Code', monospace;
+  font-size: 0.875rem;
+}
+
+.scientific-content pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+.scientific-content pre code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* Visualization embeds */
+.viz-embed {
+  margin: 2rem 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  background: white;
+}
+
+.viz-embed iframe {
+  width: 100%;
+  border: none;
+}
