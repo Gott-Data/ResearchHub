@@ -1,7 +1,13 @@
+'use client';
+
 import Link from 'next/link';
+import { useSession, signOut } from 'next-auth/react';
 import { CATEGORIES } from '@/types';
+import { FiLogOut, FiUser } from 'react-icons/fi';
 
 export default function Header() {
+  const { data: session, status } = useSession();
+
   return (
     <header className="bg-white border-b-2 border-gray-200 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -16,7 +22,7 @@ export default function Header() {
             </div>
           </Link>
 
-          <nav className="hidden md:flex space-x-6">
+          <nav className="hidden md:flex items-center space-x-6">
             <Link
               href="/"
               className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
@@ -29,12 +35,45 @@ export default function Header() {
             >
               Categories
             </Link>
-            <Link
-              href="/create"
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-            >
-              Create Story
-            </Link>
+
+            {status === 'authenticated' ? (
+              <>
+                <Link
+                  href="/create"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Create Story
+                </Link>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-gray-700">
+                    <FiUser size={18} />
+                    <span className="text-sm font-medium">{session.user?.name}</span>
+                  </div>
+                  <button
+                    onClick={() => signOut({ callbackUrl: '/' })}
+                    className="flex items-center space-x-2 text-gray-700 hover:text-red-600 font-medium transition-colors"
+                  >
+                    <FiLogOut size={18} />
+                    <span>Sign Out</span>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/login"
+                  className="text-gray-700 hover:text-blue-600 font-medium transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
 

@@ -65,6 +65,53 @@ export function saveStory(story: DataStory): void {
   fs.writeFileSync(filePath, JSON.stringify(story, null, 2), 'utf8');
 }
 
+// Get single story by ID
+export function getStoryById(id: string): DataStory | null {
+  ensureStoriesDirectory();
+
+  const filePath = path.join(storiesDirectory, `${id}.json`);
+
+  if (!fs.existsSync(filePath)) {
+    return null;
+  }
+
+  const content = fs.readFileSync(filePath, 'utf8');
+  return JSON.parse(content) as DataStory;
+}
+
+// Update a story
+export function updateStory(story: DataStory): void {
+  ensureStoriesDirectory();
+
+  const fileName = `${story.id}.json`;
+  const filePath = path.join(storiesDirectory, fileName);
+
+  // Check if story exists
+  if (!fs.existsSync(filePath)) {
+    throw new Error('Story not found');
+  }
+
+  // Update lastModified timestamp
+  story.lastModified = new Date().toISOString();
+
+  fs.writeFileSync(filePath, JSON.stringify(story, null, 2), 'utf8');
+}
+
+// Delete a story
+export function deleteStory(id: string): boolean {
+  ensureStoriesDirectory();
+
+  const fileName = `${id}.json`;
+  const filePath = path.join(storiesDirectory, fileName);
+
+  if (!fs.existsSync(filePath)) {
+    return false;
+  }
+
+  fs.unlinkSync(filePath);
+  return true;
+}
+
 // Calculate read time based on content
 export function calculateReadTime(story: DataStory): number {
   const wordsPerMinute = 200;

@@ -40,11 +40,24 @@ Research Hub is a modern web platform designed for researchers, journalists, and
 
 - **Clean, Scientific Design**: Professional typography and layout optimized for reading and research
 
+- **User Authentication**: Secure login system for content creators
+  - User registration and login
+  - Password hashing with bcrypt
+  - Session management with NextAuth.js
+  - Role-based access control (admin/author)
+
+- **Content Management**: Full CRUD operations for authenticated users
+  - Create new research stories
+  - Edit your own stories
+  - Delete your own stories
+  - Admin users can manage all content
+
 ## Tech Stack
 
 - **Framework**: Next.js 14 with App Router
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
+- **Authentication**: NextAuth.js with credentials provider
 - **Data Storage**: JSON-based file system
 - **Sharing**: react-share library
 
@@ -67,9 +80,15 @@ cd ResearchHub
 npm install
 ```
 
-3. Create environment file (optional):
+3. Create environment file:
 ```bash
 cp .env.example .env.local
+```
+
+Edit `.env.local` and set your `NEXTAUTH_SECRET`:
+```bash
+# Generate a secret with: openssl rand -base64 32
+NEXTAUTH_SECRET=your-generated-secret-here
 ```
 
 4. Run the development server:
@@ -88,9 +107,25 @@ npm start
 
 ## Usage
 
+### User Authentication
+
+Before creating stories, you need to create an account:
+
+1. Click "Sign Up" in the header
+2. Enter your name, email, and password (minimum 8 characters)
+3. Click "Create Account"
+4. You'll be automatically logged in
+
+To sign in later:
+1. Click "Sign In" in the header
+2. Enter your email and password
+3. Click "Sign In"
+
 ### Creating a Data Story
 
-1. Navigate to the "Create Story" page
+**Note**: You must be logged in to create stories.
+
+1. Navigate to the "Create Story" page (only visible when logged in)
 2. Fill in the basic information:
    - Title
    - Category
@@ -117,6 +152,15 @@ npm start
    - Follow standard citation format
 
 6. Publish your story
+
+### Editing and Deleting Stories
+
+When viewing your own stories, you'll see "Edit Story" and "Delete Story" buttons:
+
+- **Edit**: Click to modify any section of your story
+- **Delete**: Permanently remove your story (requires confirmation)
+
+Admin users can edit and delete any story on the platform.
 
 ### Embedding Visualizations
 

@@ -3,6 +3,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ShareButtons from '@/components/ShareButtons';
 import VisualizationEmbed from '@/components/VisualizationEmbed';
+import StoryActions from '@/components/StoryActions';
 import { getStoryBySlug } from '@/lib/stories';
 import { formatDate } from '@/lib/utils';
 import { CATEGORIES } from '@/types';
@@ -80,11 +81,16 @@ export default function StoryPage({ params }: StoryPageProps) {
               </div>
             )}
 
-            <div className="pt-4">
+            <div className="pt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <ShareButtons
                 url={storyUrl}
                 title={story.title}
                 description={story.abstract}
+              />
+              <StoryActions
+                storyId={story.id}
+                storySlug={story.slug}
+                authorId={story.authorId}
               />
             </div>
           </header>

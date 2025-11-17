@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -9,10 +9,14 @@ import { CATEGORIES, Category, DataStory, Visualization, Reference } from '@/typ
 import { generateId, generateSlug } from '@/lib/utils';
 import { FiPlus, FiTrash2, FiSave } from 'react-icons/fi';
 
-export default function CreateStoryPage() {
+export default function EditStoryPage() {
   const router = useRouter();
+  const params = useParams();
+  const storyId = params.id as string;
   const { data: session, status } = useSession();
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [story, setStory] = useState<DataStory | null>(null);
 
   // Redirect to login if not authenticated
   useEffect(() => {
@@ -21,15 +25,67 @@ export default function CreateStoryPage() {
     }
   }, [status, router]);
 
-  // Show loading state while checking auth
-  if (status === 'loading') {
+  // Load existing story
+  useEffect(() => {
+    if (status === 'authenticated' && storyId) {
+      loadStory();
+    }
+  }, [status, storyId]);
+
+  const loadStory = async () => {
+    try {
+      const response = await fetch(`/api/stories/${storyId}`);
+      if (!response.ok) {
+        alert('Story not found');
+        router.push('/');
+        return;
+      }
+      const data = await response.json();
+      const loadedStory = data.story as DataStory;
+
+      // Check if user owns the story
+      const userId = (session?.user as any)?.id;
+      const userRole = (session?.user as any)?.role;
+
+      if (loadedStory.authorId !== userId && userRole !== 'admin') {
+        alert('You do not have permission to edit this story');
+        router.push(`/story/${loadedStory.slug}`);
+        return;
+      }
+
+      setStory(loadedStory);
+      setFormData({
+        title: loadedStory.title,
+        category: loadedStory.category,
+        author: loadedStory.author,
+        abstract: loadedStory.abstract,
+        introduction: loadedStory.introduction,
+        methodology: loadedStory.methodology,
+        results: loadedStory.results,
+        discussion: loadedStory.discussion,
+        conclusion: loadedStory.conclusion,
+        keywords: loadedStory.keywords.join(', '),
+        doi: loadedStory.doi || '',
+      });
+      setVisualizations(loadedStory.visualizations || []);
+      setReferences(loadedStory.references || []);
+      setLoading(false);
+    } catch (error) {
+      console.error('Error loading story:', error);
+      alert('Failed to load story');
+      router.push('/');
+    }
+  };
+
+  // Show loading state while checking auth or loading story
+  if (status === 'loading' || loading) {
     return (
       <div className="min-h-screen flex flex-col bg-gray-50">
         <Header />
         <main className="flex-grow flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-solid border-blue-600 border-r-transparent mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
+            <p className="text-gray-600">{loading ? 'Loading story...' : 'Loading...'}</p>
           </div>
         </main>
         <Footer />
@@ -37,8 +93,8 @@ export default function CreateStoryPage() {
     );
   }
 
-  // Don't render form if not authenticated
-  if (!session) {
+  // Don't render form if not authenticated or no story
+  if (!session || !story) {
     return null;
   }
 
@@ -117,15 +173,12 @@ export default function CreateStoryPage() {
     setSaving(true);
 
     try {
-      const story: DataStory = {
-        id: generateId(),
-        slug: generateSlug(formData.title),
+      const updatedStory: DataStory = {
+        ...story,
         title: formData.title,
+        slug: generateSlug(formData.title),
         category: formData.category,
         author: formData.author,
-        authorId: (session.user as any).id,
-        date: new Date().toISOString(),
-        readTime: 0,
         abstract: formData.abstract,
         introduction: formData.introduction,
         methodology: formData.methodology,
@@ -138,20 +191,21 @@ export default function CreateStoryPage() {
         references,
       };
 
-      const response = await fetch('/api/stories', {
-        method: 'POST',
+      const response = await fetch(`/api/stories/${storyId}`, {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(story),
+        body: JSON.stringify(updatedStory),
       });
 
       if (response.ok) {
-        router.push(`/story/${story.slug}`);
+        router.push(`/story/${updatedStory.slug}`);
       } else {
-        alert('Failed to save story. Please try again.');
+        const data = await response.json();
+        alert(data.error || 'Failed to update story. Please try again.');
       }
     } catch (error) {
-      console.error('Error saving story:', error);
-      alert('Failed to save story. Please try again.');
+      console.error('Error updating story:', error);
+      alert('Failed to update story. Please try again.');
     } finally {
       setSaving(false);
     }
@@ -164,9 +218,9 @@ export default function CreateStoryPage() {
       <main className="flex-grow">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="bg-white border-2 border-gray-200 rounded-lg p-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Research Story</h1>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Edit Research Story</h1>
             <p className="text-gray-600 mb-8">
-              Follow the scientific paper structure to create a comprehensive data story.
+              Update your research story following the scientific paper structure.
             </p>
 
             <form onSubmit={handleSubmit} className="space-y-8">
@@ -563,7 +617,7 @@ export default function CreateStoryPage() {
                   className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FiSave className="mr-2" />
-                  {saving ? 'Publishing...' : 'Publish Story'}
+                  {saving ? 'Updating...' : 'Update Story'}
                 </button>
               </div>
             </form>

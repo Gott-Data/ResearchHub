@@ -13,6 +13,7 @@ export interface DataStory {
   slug: string;
   category: Category;
   author: string;
+  authorId: string;
   date: string;
   lastModified?: string;
   readTime: number;
