@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Build-time checks for the publication checklist (CLAUDE.md §3, §10).
-// Scans every routed MDX artifact for banned words, exclamation marks,
+// Scans every artifact MDX file for banned words, exclamation marks,
 // emojis, and the section headings required by its artifact type.
 // Templates under content/templates/ are scaffolds and are skipped.
 
@@ -9,7 +9,7 @@ import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = join(fileURLToPath(import.meta.url), "..", "..");
-const researchDir = join(root, "app", "research");
+const contentDir = join(root, "content", "research");
 
 const BANNED_WORDS = [
   "unlock",
@@ -140,7 +140,7 @@ function checkFile(file, registry) {
   }
 
   const rel = relative(root, file).replace(/\\/g, "/");
-  const slugMatch = rel.match(/^app\/research\/([^/]+)\/page\.mdx$/);
+  const slugMatch = rel.match(/^content\/research\/([^/]+)\.mdx$/);
   if (slugMatch) {
     const slug = slugMatch[1];
     const type = registry.get(slug);
@@ -172,9 +172,9 @@ function checkFile(file, registry) {
 function main() {
   let files = [];
   try {
-    files = walk(researchDir);
+    files = walk(contentDir).filter((f) => f.endsWith(".mdx"));
   } catch {
-    // no research dir yet — nothing to check
+    // no content/research dir yet — nothing to check
   }
 
   if (files.length === 0) {

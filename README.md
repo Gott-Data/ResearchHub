@@ -26,7 +26,7 @@ Then open http://localhost:3000.
 npm run check
 ```
 
-Scans every routed MDX artifact in `app/research/` for:
+Scans every MDX artifact in `content/research/` for:
 
 - Banned words from `CLAUDE.md` §3
 - Exclamation marks and emojis

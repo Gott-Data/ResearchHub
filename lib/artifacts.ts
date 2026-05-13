@@ -9,6 +9,8 @@ export type ArtifactType =
 
 export type Lens = "data" | "human" | "technology" | "category";
 
+import type { ComponentType } from "react";
+
 export type Artifact = {
   slug: string;
   type: ArtifactType;
@@ -18,6 +20,7 @@ export type Artifact = {
   updatedAt?: string;
   byline: string;
   lenses: Lens[];
+  content: () => Promise<{ default: ComponentType }>;
 };
 
 export const ARTIFACT_TYPE_LABEL: Record<ArtifactType, string> = {
