@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Source_Serif_4, Inter } from "next/font/google";
+import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooter } from "@/components/SiteFooter";
 import "./globals.css";
 
 const serif = Source_Serif_4({
@@ -18,7 +20,10 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Gott Data",
+  title: {
+    default: "Gott Data",
+    template: "%s — Gott Data",
+  },
   description:
     "Where will your category be in three years, and where should you be standing when it gets there.",
 };
@@ -30,7 +35,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${serif.variable} ${sans.variable}`}>
-      <body>{children}</body>
+      <body>
+        <SiteHeader />
+        {children}
+        <SiteFooter />
+      </body>
     </html>
   );
 }
