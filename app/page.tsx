@@ -1,7 +1,9 @@
+import Link from "next/link";
+
 export default function Home() {
   return (
     <main>
-      <p className="meta">Gott Data — Research Hub</p>
+      <p className="meta">Gott Data</p>
       <h1>
         Where will your category be in three years, and where should you be
         standing when it gets there.
@@ -11,8 +13,8 @@ export default function Home() {
         questions through four lenses: data, human, technology, and category.
       </p>
       <p>
-        This is the scaffold of the research hub. Artifacts will be published
-        here.
+        Our public work lives in the{" "}
+        <Link href="/research">research hub</Link>.
       </p>
     </main>
   );
