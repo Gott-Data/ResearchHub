@@ -5,10 +5,24 @@ One template per artifact type from `CLAUDE.md` §6. These are scaffolds, not pu
 ## Workflow
 
 1. Pick the template that matches the artifact type.
-2. Copy it to `app/research/<slug>/page.mdx`.
-3. Register the artifact in `lib/artifacts.ts` (slug, type, title, summary, publishedAt, byline, lenses).
+2. Copy it to `content/research/<slug>.mdx`.
+3. Register the artifact in `lib/artifacts.ts`:
+
+   ```ts
+   {
+     slug: "<slug>",
+     type: "<type>",
+     title: "...",
+     summary: "...",
+     publishedAt: "YYYY-MM-DD",
+     byline: "...",
+     lenses: ["data", "human", "technology", "category"],
+     content: () => import("@/content/research/<slug>.mdx"),
+   }
+   ```
+
 4. Fill in the prose. The template comments mark what each section must contain.
-5. Run the publication checklist (`CLAUDE.md` §10) before merge.
+5. Run `npm run check` before merge. The build fails any artifact that does not pass `CLAUDE.md` §10.
 
 ## Templates
 
