@@ -1,3 +1,5 @@
+import type { ComponentType } from "react";
+
 export type ArtifactType =
   | "flagship"
   | "whitepaper"
@@ -8,8 +10,6 @@ export type ArtifactType =
   | "shadow-case-study";
 
 export type Lens = "data" | "human" | "technology" | "category";
-
-import type { ComponentType } from "react";
 
 export type Artifact = {
   slug: string;
