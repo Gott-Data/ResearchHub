@@ -40,7 +40,20 @@ export const LENS_LABEL: Record<Lens, string> = {
   category: "Category",
 };
 
-export const artifacts: Artifact[] = [];
+export const artifacts: Artifact[] = [
+  {
+    slug: "four-lens-framework",
+    type: "framework",
+    title:
+      "The Four-Lens Framework: Holding data, human, technology, and category in one room",
+    summary:
+      "How we keep category questions from being answered through one kind of evidence. The discipline of asking every question through all four lenses before we synthesise.",
+    publishedAt: "2026-05-13",
+    byline: "Gott Data",
+    lenses: ["data", "human", "technology", "category"],
+    content: () => import("@/content/research/four-lens-framework.mdx"),
+  },
+];
 
 export function getArtifact(slug: string): Artifact | undefined {
   return artifacts.find((a) => a.slug === slug);
